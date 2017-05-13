@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
 using OpenNLP;
-using OpenNLP.Tools.SentenceDetect
+using OpenNLP.Tools.SentenceDetect;
 
-namespace Hanslator.Dialogs
+namespace Hanslator
 {
     public static class Hanslation
     {
@@ -26,6 +26,7 @@ namespace Hanslator.Dialogs
             reply = AddSuch(sourceText);
             reply = ReplacePunctuation(reply);
             reply = EmbelishUrl(reply);
+            reply = AddHmm(reply);
 
             return reply;
         }
@@ -37,21 +38,22 @@ namespace Hanslator.Dialogs
         /// <returns></returns>
         private static string EmbelishUrl(string sourceText)
         {
-            string reply;
-            var r = new Regex(@"\b(?:https?://|www\.)\S+\b", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+            string addition;
             var p = new Random().Next(1, 100);
 
             if (p < 75)
             {
-                reply = r.Replace(sourceText, "see: " + Environment.NewLine + "{0}" + Environment.NewLine);
+                addition = "see: ";
             }
             else
             {
-                reply = r.Replace(sourceText, "as: " + Environment.NewLine + "{0}" + Environment.NewLine);
+                addition = "as: ";
             }
 
-
-            return reply;
+            return Regex.Replace(sourceText, @"\b(?:https?://|www\.)\S+\b", match =>
+            {
+                return addition + Environment.NewLine + match.Value + Environment.NewLine;
+            });
 
         }
 
@@ -120,6 +122,15 @@ namespace Hanslator.Dialogs
             return reply;
         }
 
+        private static string AddHmmm(string sourceText)
+        {
+            if (! sourceText.StartsWith("Greetings"))
+            {
+                sourceText = "Hmmm... " + sourceText;
+            }
+            return sourceText;
+        }
+
         //private List<string> SentenceParser(string input)
         //{
         //    var modelPath = "path/to/EnglishSD.nbin";
@@ -129,16 +140,4 @@ namespace Hanslator.Dialogs
     }
 
 
-}
-
-
-/// <summary>
-/// The translator can respond in one of two personas
-/// RON expects English and responds in Hansen
-/// NOR expects Hansen and replies in English
-/// </summary>
-public enum Persona
-{
-    RON = 0,
-    NOR = 1
 }
