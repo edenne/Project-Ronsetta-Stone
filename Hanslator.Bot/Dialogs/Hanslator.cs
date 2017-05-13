@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
+using OpenNLP;
+using OpenNLP.Tools.SentenceDetect
 
 namespace Hanslator.Dialogs
 {
@@ -23,19 +25,35 @@ namespace Hanslator.Dialogs
             reply = ReplaceGreetings(sourceText);
             reply = AddSuch(sourceText);
             reply = ReplacePunctuation(reply);
+            reply = EmbelishUrl(reply);
 
             return reply;
         }
 
         /// <summary>
-        /// In Hansenese, any reference to a URL must be proceeded by "see:" or 
+        /// In Hansenese, any reference to a URL must be proceeded by "see:" or "as:"
         /// </summary>
         /// <param name="sourceText">The text to Hanslate</param>
         /// <returns></returns>
-        //private static string SeeUrl(string sourceText)
-        //{
+        private static string EmbelishUrl(string sourceText)
+        {
+            string reply;
+            var r = new Regex(@"\b(?:https?://|www\.)\S+\b", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+            var p = new Random().Next(1, 100);
 
-        //}
+            if (p < 75)
+            {
+                reply = r.Replace(sourceText, "see: " + Environment.NewLine + "{0}" + Environment.NewLine);
+            }
+            else
+            {
+                reply = r.Replace(sourceText, "as: " + Environment.NewLine + "{0}" + Environment.NewLine);
+            }
+
+
+            return reply;
+
+        }
 
 
         /// <summary>
@@ -101,6 +119,13 @@ namespace Hanslator.Dialogs
 
             return reply;
         }
+
+        //private List<string> SentenceParser(string input)
+        //{
+        //    var modelPath = "path/to/EnglishSD.nbin";
+        //    var sentenceDetector = EnglishMaximumEntropySentenceDetector(modelPath);
+        //    var sentences = sentenceDetector.SentenceDetect(input);
+        //}
     }
 
 
