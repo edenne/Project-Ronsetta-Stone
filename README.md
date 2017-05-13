@@ -4,7 +4,7 @@
 
 # Project Ronsetta Stone
 ### Goal
-The purpose of Project Ronsetta Stone is to automate the translation the obscure language microlanguage Hansenese.  This process is better known as "Hanslation".
+The purpose of Project Ronsetta Stone is to automate the translation the obscure microlanguage Hansenese.  This process is better known as "Hanslation".
 
 ### Approach
 Through the use of natural language processing tools and custom language parsing algorithms, we will develop a .NET Hanslation library that can manage
