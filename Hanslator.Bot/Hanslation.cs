@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
-using OpenNLP;
-using OpenNLP.Tools.SentenceDetect;
 
 namespace Hanslator
 {
@@ -26,7 +24,8 @@ namespace Hanslator
             reply = AddSuch(sourceText);
             reply = ReplacePunctuation(reply);
             reply = EmbelishUrl(reply);
-            reply = AddHmm(reply);
+            reply = AddHmmm(reply);
+            reply = WhackOr(reply);
 
             return reply;
         }
@@ -57,6 +56,15 @@ namespace Hanslator
 
         }
 
+        /// <summary>
+        /// Hansenese uses the whack "/" symbol in place of the word "or"
+        /// </summary>
+        /// <param name="sourceText">The text to Hanslate</param>
+        /// <returns>The Hanslated text</returns>
+        private static string WhackOr(string sourceText)
+        {
+            return Regex.Replace(sourceText, @"\bor\b", "/");
+        }
 
         /// <summary>
         /// Hansenese requires "such" after "as" or "for"
@@ -65,14 +73,19 @@ namespace Hanslator
         /// <returns></returns>
         private static string AddSuch(string sourceText)
         {
-            string reply;
-            Regex r;
-
-            r = new Regex(@"\bas\b");
-            reply = r.Replace(sourceText, "as such");
-
-            return reply;   
+            return Regex.Replace(sourceText, @"\bas\b", "as such");
         }
+
+        /// <summary>
+        /// In Hansense, the word "about" is always followed by "same"
+        /// </summary>
+        /// <param name="sourceText"></param>
+        /// <returns></returns>
+        private static string AddSame(string sourceText)
+        {
+            return Regex.Replace(sourceText, @"\babout\b", "about same");
+        }
+
 
         /// <summary>
         /// Periods, colons, and semi-colons should be replaced by ellipses.
